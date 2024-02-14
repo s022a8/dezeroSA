@@ -9,15 +9,27 @@ class Variable:
         self.data = data
         self.grad = None
         self.creator = None
+        self.generation = 0
     
     def set_creator(self, func):
         self.creator = func
+        self.generation = func.generation + 1
     
     def backward(self):
         if self.grad is None:
             self.grad = np.ones_like(self.data)
             
-        funcs = [self.creator]
+        funcs = []
+        seen_set = set()
+        
+        def add_func(f):
+            if f not in seen_set:
+                funcs.append(f)
+                seen_set.add(f)
+                funcs.sort(key=lambda x: x.generation)
+        
+        add_func(self.creator)
+        
         while funcs:
             f = funcs.pop()
             gys = [output.grad for output in f.outputs]
@@ -32,7 +44,7 @@ class Variable:
                     x.grad = x.grad + gx
                 
                 if x.creator is not None:
-                    funcs.append(x.creator)
+                    add_func(x.creator)
     
     def cleangrad(self):
         self.grad = None
@@ -45,6 +57,7 @@ class Function:
             ys = (ys,)
         outputs = [Variable(as_array(y)) for y in ys]
         
+        self.generation = max([x.generation for x in inputs])
         for output in outputs:
             output.set_creator(self)
         self.inputs = inputs
@@ -105,15 +118,4 @@ def numerical_diff(f, x, eps=1e-4):
     y0 = f(x0)
     y1 = f(x1)
     return (y1.data - y0.data) / (2 * eps)
-        
-# １回目の計算
-x = Variable(np.array(3.0))
-y = add(x, x)
-y.backward()
-print(x.grad)
 
-# ２回目の計算
-x.cleangrad()
-y = add(add(x, x), x)
-y.backward()
-print(x.grad)
