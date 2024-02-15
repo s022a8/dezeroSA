@@ -6,6 +6,8 @@ sys.path.append('.')
 import config.config as cfg
 
 class Variable:
+    __array_priority = 200
+    
     def __init__(self, data, name=None):
         if data is not None:
             if not isinstance(data, np.ndarray):
@@ -86,6 +88,8 @@ class Variable:
  
 class Function:
     def __call__(self, *inputs):
+        inputs = [as_variable(x) for x in inputs]
+        
         xs = [x.data for x in inputs]
         ys = self.forward(*xs)
         if not isinstance(ys, tuple):
@@ -168,9 +172,11 @@ def exp(x):
     return Exp()(x)
 
 def add(x0, x1):
+    x1 = as_array(x1)
     return Add()(x0, x1)
 
 def mul(x0, x1):
+    x1 = as_array(x1)
     return Mul()(x0, x1)
 
 def sub(x0, x1):
@@ -184,6 +190,11 @@ def as_array(x):
         return np.array(x)
     return x
 
+def as_variable(obj):
+    if isinstance(obj, Variable):
+        return obj
+    return Variable(obj)
+
 def numerical_diff(f, x, eps=1e-4):
     x0 = Variable(x.data - eps)
     x1 = Variable(x.data + eps)
@@ -192,6 +203,8 @@ def numerical_diff(f, x, eps=1e-4):
     return (y1.data - y0.data) / (2 * eps)
 
 Variable.__add__ = add
+Variable.__radd__ = add
 Variable.__sub__ = sub
 Variable.__mul__ = mul
+Variable.__rmul__ = mul
 Variable.__truediv__ = div
