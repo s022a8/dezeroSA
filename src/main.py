@@ -83,6 +83,7 @@ class Variable:
             return 'variable(None)'
         p = str(self.data).replace('\n', '\n' + ' ' * 9)
         return 'variable(' + p + ')'
+ 
 class Function:
     def __call__(self, *inputs):
         xs = [x.data for x in inputs]
@@ -134,6 +135,32 @@ class Add(Function):
     def backward(self, gy):
         return gy, gy
 
+class Mul(Function):
+    def forward(self, x0, x1):
+        y = x0 * x1
+        return y
+    
+    def backward(self, gy):
+        x0, x1 = self.inputs[0].data, self.inputs[1].data
+        return gy * x1, gy * x0
+    
+class Sub(Function):
+    def forward(self, x0, x1):
+        y = x0 - x1
+        return y
+    
+    def backward(self, gy):
+        return gy, -gy
+
+class Div(Function):
+    def forward(self, x0, x1):
+        y = x0 / x1
+        return y
+    
+    def backward(self, gy):
+        x0, x1 = self.inputs[0].data, self.inputs[1].data  
+        return gy * (1 / x0), -gy * (x0 / (x1 ** 2))
+
 def square(x):
     return Square()(x)
 
@@ -142,6 +169,15 @@ def exp(x):
 
 def add(x0, x1):
     return Add()(x0, x1)
+
+def mul(x0, x1):
+    return Mul()(x0, x1)
+
+def sub(x0, x1):
+    return Sub()(x0, x1)
+
+def div(x0, x1):
+    return Div()(x0, x1)
 
 def as_array(x):
     if np.isscalar(x):
@@ -155,3 +191,7 @@ def numerical_diff(f, x, eps=1e-4):
     y1 = f(x1)
     return (y1.data - y0.data) / (2 * eps)
 
+Variable.__add__ = add
+Variable.__sub__ = sub
+Variable.__mul__ = mul
+Variable.__truediv__ = div
