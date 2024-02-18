@@ -63,7 +63,7 @@ y = sum_to(x, (2, 1))
 print(y.shape)
 print("sum_to(x, (2, 1)):\n {}".format(y))
 
-y = sum_to(x, (1, 2)) # これだけ失敗している。原因は(1, 2)より、axis = (1,)となってしまうこと。
+y = sum_to(x, (1, 2))
 print(y.shape)
 print("sum_to(x, (1, 2)):\n {}".format(y))
 

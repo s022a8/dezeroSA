@@ -79,23 +79,41 @@ def sum_to(x, shape):
     ndim = len(shape)
     lead = x.ndim - ndim
     """step43で追加"""
-    axis = tuple([i + lead for i, sx in enumerate(shape) if sx == 1])
     lead_axis = []
-    if (lead > 0):
-        x_shape_lst, shape_lst = list(x.shape), list(shape)
-        next_idx = 0
-        for i, xdm in enumerate(x_shape_lst):
-            j = next_idx 
-            while j < len(shape_lst):
-                if (xdm == shape_lst[j]):
-                    next_idx = j + 1
-                    break
-                else:
-                    j += 1
-                    
-            if (j >= len(shape_lst) and i not in axis):
-                lead_axis.append(i)
+    exist_axis = []
+    axis = []
+    # if (lead > 0):
+    x_shape_lst, shape_lst = list(x.shape), list(shape)
+    next_idx = 0
+    for i, sdm in enumerate(shape_lst):
+        if (sdm == 1):
+            continue
+            
+        j = next_idx 
+        while j < len(x_shape_lst):
+            if (sdm == x_shape_lst[j]):
+                exist_axis.append(j)
+                next_idx = j + 1
+                break
+            else:
+                j += 1
+    
+    first_exist_axis = -1
+    if (len(exist_axis) > 0):
+        first_exist_axis = exist_axis[0]
+    
+    for i, sdm in enumerate(shape_lst):
+        if (sdm == 1):
+            if (i < first_exist_axis):
+                axis.append(i)
+            else:
+                axis.append(i + lead)
+    
+    for i, _ in enumerate(x_shape_lst):
+        if (i not in axis + exist_axis):
+            lead_axis.append(i)
 
+    axis = tuple(axis)
     lead_axis = tuple(lead_axis)
     """step43で追加""" 
     
