@@ -35,20 +35,62 @@ y = sum_to(x, (4, 1, 1))
 print(y.shape)
 print("sum_to(x, (4, 1, 1)):\n {}".format(y))
 
+y = sum_to(x, (1, 2, 1))
+print(y.shape)
+print("sum_to(x, (1, 2, 1)):\n {}".format(y))
+
+y = sum_to(x, (1, 1, 3))
+print(y.shape)
+print("sum_to(x, (1, 1, 3)):\n {}".format(y))
+
 y = sum_to(x, (4, 2))
 print(y.shape)
 print("sum_to(x, (4, 2)):\n {}".format(y))
+
+y = sum_to(x, (2, 3))
+print(y.shape)
+print("sum_to(x, (2, 3)):\n {}".format(y))
+
+y = sum_to(x, (4, 3))
+print(y.shape)
+print("sum_to(x, (4, 3)):\n {}".format(y))
 
 y = sum_to(x, (4, 1))
 print(y.shape)
 print("sum_to(x, (4, 1)):\n {}".format(y))
 
-# Add等の演算のブロードキャスト
-x0 = Variable(np.array([1, 2, 3]))
-x1 = Variable(np.array([10]))
-y = x0 + x1
-print(y)
+y = sum_to(x, (2, 1))
+print(y.shape)
+print("sum_to(x, (2, 1)):\n {}".format(y))
 
-y.backward()
-print(x0.grad)
-print(x1.grad)
+y = sum_to(x, (1, 2)) # これだけ失敗している。
+print(y.shape)
+print("sum_to(x, (1, 2)):\n {}".format(y))
+
+y = sum_to(x, (1, 3))
+print(y.shape)
+print("sum_to(x, (1, 3)):\n {}".format(y))
+
+y = sum_to(x, (4,))
+print(y.shape)
+print("sum_to(x, (4,)):\n {}".format(y))
+
+y = sum_to(x, (2,))
+print(y.shape)
+print("sum_to(x, (2,)):\n {}".format(y))
+
+y = sum_to(x, (3,))
+print(y.shape)
+print("sum_to(x, (3,)):\n {}".format(y))
+
+
+
+# # Add等の演算のブロードキャスト
+# x0 = Variable(np.array([1, 2, 3]))
+# x1 = Variable(np.array([10]))
+# y = x0 + x1
+# print(y)
+
+# y.backward()
+# print(x0.grad)
+# print(x1.grad)

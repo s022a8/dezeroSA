@@ -78,20 +78,41 @@ def sum_to(x, shape):
     # 順伝播の出入力の次元数の差を計算
     ndim = len(shape)
     lead = x.ndim - ndim
-    # # 追加された軸番号を作成（軸は先頭に追加されるため、range(lead)で追加された軸番号を取得可能）
-    # lead_axis = tuple(range(lead))
-    lead_axis = tuple(range(ndim, ndim + lead))
+    """step43で追加"""
+    axis = tuple([i + lead for i, sx in enumerate(shape) if sx == 1])
+    lead_axis = []
+    if (lead > 0):
+        x_shape_lst, shape_lst = list(x.shape), list(shape)
+        next_idx = 0
+        for i, xdm in enumerate(x_shape_lst):
+            j = next_idx 
+            while j < len(shape_lst):
+                if (xdm == shape_lst[j]):
+                    next_idx = j + 1
+                    break
+                else:
+                    j += 1
+                    
+            if (j >= len(shape_lst) and i not in axis):
+                lead_axis.append(i)
 
-    """
-    ブロードキャストで要素数(sx)が１の次元が複製される。
-    #このとき、複製された次元の軸番号(i)は、追加された軸数(lead)分後ろになる。
-    #a: (0, 1), b: (2, 3, 4)の時、a + b: (0, 1, 2, 3, 4)
-    #sum(全ての軸)は、sum()と等しい（全ての要素の合計）。
-    #x: [[0, 1, 2], [3, 4, 5]]の時、 x.sum((0, 1)): 15、x.sum((0, 1), keepdims=True): [[15]]
-    """
+    lead_axis = tuple(lead_axis)
+    """step43で追加""" 
+    
+    ## 追加された軸番号を作成（軸は先頭に追加されるため、range(lead)で追加された軸番号を取得可能）
+    #lead_axis = tuple(range(lead))
+    #lead_axis = tuple(range(ndim, ndim + lead))
+
+    # """
+    # ブロードキャストで要素数(sx)が１の次元が複製される。
+    # #このとき、複製された次元の軸番号(i)は、追加された軸数(lead)分後ろになる。
+    # #a: (0, 1), b: (2, 3, 4)の時、a + b: (0, 1, 2, 3, 4)
+    # #sum(全ての軸)は、sum()と等しい（全ての要素の合計）。
+    # #x: [[0, 1, 2], [3, 4, 5]]の時、 x.sum((0, 1)): 15、x.sum((0, 1), keepdims=True): [[15]]
+    # """
     # 和を求める際に消去される軸番号を抽出
-    # axis = tuple([i + lead for i, sx in enumerate(shape) if sx == 1])
-    axis = tuple([i for i, sx in enumerate(shape) if sx == 1])
+    #axis = tuple([i + lead for i, sx in enumerate(shape) if sx == 1])
+    #axis = tuple([i for i, sx in enumerate(shape) if sx == 1])
     y = x.sum(lead_axis + axis, keepdims=True)
     
     """
