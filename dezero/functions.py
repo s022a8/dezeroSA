@@ -132,3 +132,19 @@ def sum_to(x, shape):
         return as_variable(x)
     return SumTo(shape)(x)
 
+class MatMul(Function):
+    """
+    x.shape:(N, D), W.shape:(D, H), y.shape:(N, H)
+    """
+    def forward(self, x, W):
+        y = x.dot(W)
+        return y
+    
+    def backward(self, gy):
+        x, W = self.inputs
+        gx = matmul(gy, W.T)
+        gW = matmul(x.T, gy)
+        return gx, gW
+    
+def matmul(x, W):
+    return MatMul()(x, W)
