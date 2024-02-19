@@ -77,7 +77,7 @@ class Variable:
                 for y in f.outputs:
                     y().grad = None  # yはweakref
     
-    def cleangrad(self):
+    def cleargrad(self):
         self.grad = None
 
     def reshape(self, *shape):
@@ -116,6 +116,9 @@ class Variable:
             return 'variable(None)'
         p = str(self.data).replace('\n', '\n' + ' ' * 9)
         return 'variable(' + p + ')'
+
+class Parameter(Variable):
+    pass
  
 class Function:
     def __call__(self, *inputs):
