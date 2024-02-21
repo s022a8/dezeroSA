@@ -1,6 +1,7 @@
 import numpy as np
 import weakref
 import contextlib
+import dezero.functions as F
 
 class Config:
     enable_backprop = True
@@ -238,3 +239,4 @@ def setup_variable():
     Variable.__rtruediv__ = rdiv
     Variable.__neg__ = neg
     Variable.__pow__ = pow
+    Variable.__getitem__ = F.get_item
