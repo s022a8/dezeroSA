@@ -12,6 +12,8 @@ class Dataset:
     def __init__(self, train=True, transform=None, target_transform=None):
         self.train = train
         self.transform = transform
+        self.target_transform = target_transform
+        
         if self.transform is None:
             self.transform = lambda x: x
         if self.target_transform is None:
@@ -25,7 +27,7 @@ class Dataset:
         if self.label is None:
             return self.transform(self.data[index]), None
         else:
-            return self.trandform(self.data[index]), self.target_transform(self.label[index])
+            return self.transform(self.data[index]), self.target_transform(self.label[index])
     
     def __len__(self):
         return len(self.data)
