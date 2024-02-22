@@ -245,6 +245,7 @@ class Softmax(Function):
         y = x - x.max(axis=self.axis, keepdims=True)  # 冪乗のオーバーフロー対策
         y = np.exp(y)
         y /= y.sum(axis=self.axis, keepdims=True)
+        return y
     
     def backward(self, gy):
         y = self.outputs[0]()
