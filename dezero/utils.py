@@ -253,3 +253,11 @@ def pair(x):
         return x
     else:
         raise ValueError
+
+def get_conv_outsize(input_size, kernel_size, stride, pad):
+    return (input_size + pad * 2 - kernel_size) // stride + 1
+
+# (inputs_size + pad * 2 - kernel_size) // stride + 1 = outputs_sizeの式より、
+# inputs_sizeについて解くと下記になる。（s:stride, size:outputs_size, k:kernel_size, p:pad）
+def get_deconv_outsize(size, k, s, p):
+    return s * (size - 1) + k - 2 * p

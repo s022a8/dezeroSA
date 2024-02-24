@@ -1,9 +1,7 @@
 import numpy as np
-from dezero.core import Variable
-from dezero.core import Function
-from dezero.core import as_variable, as_array
+import dezero
 from dezero import utils
-from dezero.core import Config
+from dezero.core import Function, Variable, Config, as_variable, as_array
 
 class Sin(Function):
     def forward(self, x):
@@ -372,4 +370,10 @@ def dropout(x, dropout_ratio=0.5):
         return y
     else:
         return x
-        
+
+
+from dezero.functions_conv import conv2d
+from dezero.functions_conv import deconv2d
+from dezero.functions_conv import conv2d_simple
+from dezero.functions_conv import im2col
+from dezero.functions_conv import col2im
