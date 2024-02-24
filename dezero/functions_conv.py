@@ -233,7 +233,10 @@ class Pooling2DWithIndexes(Function):
         col = col.transpose(0, 1, 3, 4, 2).reshape(-1, KH * KW)
         # indexesは1次元データ（N*C*OH*OW）
         indexes = self.indexes.ravel()
-        # colの要素にindexesの対応する要素を格納していく。（indexesの要素を格納する際に、その要素はKH*KW個にブロードキャストされる）
+        """
+        colの要素にindexesの対応する要素を格納していく。
+        つまり、colの各要素にpoolingで求めた(0〜KH*KWの内の)最大値のインデックスを格納する。
+        """
         col = col[np.arange(len(indexes)), indexes]
         # (N, C, OH, OW)は＜出力データのサイズ＞
         return col.reshape(N, C, OH, OW)
